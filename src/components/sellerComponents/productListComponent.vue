@@ -406,6 +406,7 @@ const addProduct = async () => {
     formData.append('stockXlarge', stockXlarge.value);
     formData.append('price', price.value);
     formData.append('category', category.value);
+    formData.append('seller_id', localStorage.getItem('Id'))
 
     try {
         const response = await axios.post('/product', formData, {

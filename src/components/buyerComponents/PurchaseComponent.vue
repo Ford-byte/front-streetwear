@@ -23,27 +23,35 @@
               <td class="py-2 px-2">{{ order.SW_Price }}</td>
               <td class="py-2 px-2 flex flex-col sm:flex-row justify-center items-center gap-2">
                 <button :class="[
-                  !order.SW_IsApproved || order.SW_Status || loading ? 'text-gray-400' : (order.SW_IsApproved ? (order.SW_Status ? 'text-green-600' : 'text-yellow-400') : 'text-red-500'),
+                  order.SW_IsApproved && order.SW_Status? 'text-green-600'                 
+                  : order.SW_IsApproved
+                      ? order.SW_Status
+                        ? 'text-green-600'
+                        : 'text-yellow-400' 
+                    : 'text-red-500',
                   'rounded-md w-full sm:w-auto text-center text-xs'
-                ]" :disabled="!order.SW_IsApproved || order.SW_Status || loading" aria-label="Approval status"
+                ]"
+                 :disabled="!order.SW_IsApproved || order.SW_Status " aria-label="Approval status"
                   @click="order.SW_IsApproved && !order.SW_Status ? openOrderReceivedModal(order) : null">
-                  {{ order.SW_IsDeleted ? 'Declined' : (order.SW_IsApproved ? (order.SW_Status ? 'Complete' : 'Pending')
-                    :
-                    'Waiting for Approval') }}
+                  
+                  {{
+                    order.SW_IsDeleted && !order.SW_IsApproved ? 'Declined' : order.SW_IsApproved ? order.SW_Status ? 'Complete' : 'Pending' : 'Waiting for Approval'
+                  }}
+
                 </button>
 
-                <button v-if="order.SW_Status !== 'Complete' && !order.SW_IsDeleted && !order.SW_IsApproved"
+                <button v-if="!order.SW_IsDeleted || !order.SW_IsApproved"
                   class="text-orange-500 text-xs rounded-md w-full sm:w-auto" @click="openCancelModal(order)">
                   Cancel
                 </button>
 
-                <button class=" text-xs rounded-md w-full sm:w-auto p-2" @click="openDeleteModal(order)"
+                <button class=" text-xs rounded-md w-full sm:w-auto p-2 text-red-500" @click="openDeleteModal(order)"
                   :disabled="!order.SW_Status || !order.SW_IsApproved"
-                  :class="order.SW_Status ? 'text-red-500' : 'text-gray-400'">
+                  :class="order.SW_Status ? 'block' : 'hidden'">
                   Delete
                 </button>
 
-                <button class="text-xs text-blue-500 hover:underline hover:text-blue-700" @click="selectedItem(order)">
+                <button class="text-xs text-blue-500 hover:underline hover:text-blue-700 " @click="selectedItem(order)">
                   View
                 </button>
               </td>
@@ -110,7 +118,7 @@
               <img :src="image" alt="Uploaded image" class="w-full h-full object-cover rounded-md" />
               <button @click="removeImage(index)"
                 class="absolute top-1 right-1 bg-red-500 text-white text-sm rounded-full w-6 h-6 flex items-center justify-center">
-                <Close/>
+                <Close />
               </button>
             </div>
           </div>
@@ -239,6 +247,8 @@ const submitReport = async () => {
 
     if (response.status === 200) {
       toast.success("Report submitted successfully", { timeout: 1000 });
+      reportedPersona.value = 'Product';
+      closeReport();
     } else {
       toast.error("Error submitting report", { timeout: 1000 });
     }

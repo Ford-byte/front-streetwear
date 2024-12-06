@@ -68,9 +68,6 @@
                 Take a thrilling journey through our product's features. Book an adventurous demo and discover endless
                 possibilities.
             </p>
-            <p
-                class="hidden md:flex mt-8 bg-white px-5 py-2.5 text-base font-semibold leading-7 text-black focus:outline-none">
-                Claim Your 15% off Adventure! Shop Now</p>
         </div>
     </section>
 
@@ -123,7 +120,7 @@
 
                             <div class="pagination w-full flex justify-center items-center py-4">
                                 <button @click="goToPage(currentPage - 1)" :disabled="currentPage === 1"
-                                    class="p-2 rounded-lg bg-blue-500 ">
+                                    class="p-2 rounded-lg bg-blue-500 "><
                                 </button>
                                 <span>Page {{ currentPage }} / {{ totalPages }}</span>
                                 <button @click="goToPage(currentPage + 1)" :disabled="currentPage === totalPages"
@@ -136,7 +133,7 @@
                         </RouterLink> -->
 
                         <div v-if="selectedSize" class="size-indicator">
-                            Size: {{ selectedSize }}
+                            Size: {{ selectedSize }} ,  Stock Available {{ selectSize == 'S'? selectedProduct.SW_Small :selectSize == 'M'? selectedProduct.SW_Medium :selectSize == 'L'? selectedProduct.SW_Large   : selectedProduct.SW_X_large}}
                         </div>
                     </div>
                     <h2 class="text-2xl font-bold mt-2">{{ formattedPrice }}</h2>
@@ -210,12 +207,6 @@
         </div>
 
     </section>
-
-    <div class="fixed flex justify-center items-center h-full w-full">
-        <p class="bg-gray-200 w-full py-4 flex text-lg font-black justify-center" v-if="products.length < 1">No product
-            available.</p>
-    </div>
-
     <section class="py-6 bg-gray-900 h-fit pt-12 sm:pt-0" v-if="products.length > 0">
         <h1 class="text-xl sm:text-3xl pt-24 font-bold flex justify-center text-white">MORE PRODUCTS</h1>
         <div class="container grid gap p-4 m-6 mx-auto grid-cols-2 md:grid-cols-3 gap-4">
@@ -226,6 +217,11 @@
             </div>
         </div>
     </section>
+
+    <div class="fixed md:relative flex justify-center items-center h-full w-full">
+        <p class="bg-gray-200 w-full py-4 flex text-lg font-black justify-center" v-if="products.length < 1">No product
+            available.</p>
+    </div>
 
 
     <section v-if="checkoutModal" class="bg-gray-900 fixed left-0 top-0 w-full h-full flex items-center justify-center">

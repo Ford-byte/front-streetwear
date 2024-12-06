@@ -35,6 +35,7 @@
             <td class="py-3 px-4">
               <button @click="openModal(user)" class="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 m-2">View</button>
               <button @click="confirmDelete(user.SW_Id)" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 m-2">Delete</button>
+              <button @click="confirmBlock(user.SW_Id)" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 m-2">{{user.SW_IsBlocked ? 'Block' : 'Unblock'}}</button>
             </td>
           </tr>
           <tr v-if="paginatedUsers.length === 0">
@@ -82,6 +83,13 @@
       @confirm="deleteUser(userIdToDelete)" 
       @cancel="closeDeleteModal" 
     />
+    <ConfirmationModal 
+      :visible="BlockModal" 
+      title="Confirm Deletion" 
+      message="Are you sure you want to delete this user?" 
+      @confirm="blockUser(userIdToDelete)" 
+      @cancel="closeBlockModal" 
+    />
     <SuccessModal 
       :visible="isSuccessModalVisible" 
       :message="successMessage" 
@@ -108,6 +116,7 @@ const isSuccessModalVisible = ref(false);
 const isErrorModalVisible = ref(false);
 const users = ref([]);
 const isModalOpen = ref(false);
+const BlockModal = ref(false);
 const isDeleteModalOpen = ref(false);
 const currentUser = ref({});
 const userIdToDelete = ref(null);
@@ -173,10 +182,21 @@ async function updateUser() {
   }
 }
 
+
+
 function confirmDelete(userId) {
   userIdToDelete.value = userId;
   isDeleteModalOpen.value = true;
 }
+function confirmBlock(userId) {
+  userIdToDelete.value = userId;
+  BlockModal.value = true;
+}
+function closeBlockModal() {
+  BlockModal.value = false;
+  userIdToDelete.value = null;
+}
+
 
 function closeDeleteModal() {
   isDeleteModalOpen.value = false;
@@ -186,6 +206,7 @@ function closeDeleteModal() {
 async function deleteUser(userId) {
   try {
     await axios.delete(`/user/${userId}`);
+    deleteProduct(userId);
     users.value = users.value.filter(user => user.SW_Id !== userId);
     successMessage.value = 'User deleted successfully!';
     isSuccessModalVisible.value = true;
@@ -199,6 +220,34 @@ async function deleteUser(userId) {
     isErrorModalVisible.value = true;
   }
 }
+
+async function blockUser(userId){
+   try {
+    await axios.delete(`/userBlock/${userId}`);
+    users.value = users.value.filter(user => user.SW_Id !== userId);
+    successMessage.value = 'Successfully!';
+    isSuccessModalVisible.value = true;
+    deleteProduct(userId)
+    closeBlockModal();
+    setTimeout(()=>{
+      isSuccessModalVisible.value = false;
+    },1000)
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    errorMessage.value = 'Failed to delete user. Please try again.';
+    isErrorModalVisible.value = true;
+  }
+}
+
+const deleteProduct = async (userId) => {
+    try {
+        await axios.delete(`/allproduct/${userId}`);
+        closeDeleteModal();
+        handleSuccess('Product deleted successfully.');
+    } catch {
+        handleError('Error deleting product. Please try again.');
+    }
+};
 
 function nextPage() {
   if (currentPage.value < totalPages.value) {

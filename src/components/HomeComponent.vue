@@ -37,11 +37,11 @@
         <div class="border border-black p-12 flex flex-wrap items-center text-center bg-gray-200 opacity-90">
             <div>
                 <h2 class="text-6xl tracking-tighter font-bold">
-                    Bonus Sale
+                    SHOP NOW!
                     <!-- <br class="hidden sm:block">20&#37; Off -->
                 </h2>
                 <div class="space-x-2 text-center py-4 lg:py-0">
-                    <span>Plus free shipping!</span>
+                    <span>Click Me!</span>
                 </div>
                 <div>
                     <button class="px-5 py-3 rounded-md bg-gray-900 text-white border border-gray-600"
